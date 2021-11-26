@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_pokemon/api/login_store.dart';
 import 'package:flutter_pokemon/views/home_view.dart';
 
 class LoginView extends StatefulWidget {
@@ -9,6 +11,7 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  var loginStore = LoginStore();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,8 +40,9 @@ class _LoginViewState extends State<LoginView> {
                     const SizedBox(
                       height: 15,
                     ),
-                    const TextField(
-                      decoration: InputDecoration(
+                    TextField(
+                      onChanged: loginStore.setEmail,
+                      decoration: const InputDecoration(
                         labelText: 'Email',
                         border: OutlineInputBorder(),
                       ),
@@ -46,10 +50,24 @@ class _LoginViewState extends State<LoginView> {
                     const SizedBox(
                       height: 15,
                     ),
-                    const TextField(
-                      decoration: InputDecoration(
-                        labelText: 'Senha',
-                        border: OutlineInputBorder(),
+                    Observer(
+                      builder: (context) => TextField(
+                        onChanged: loginStore.setSenha,
+                        decoration: InputDecoration(
+                            labelText: 'Senha',
+                            border: const OutlineInputBorder(),
+                            suffixIcon: IconButton(
+                                onPressed: () {
+                                  if (loginStore.senhaVisivel) {
+                                    loginStore.senhaVisivel = false;
+                                  } else {
+                                    loginStore.senhaVisivel = true;
+                                  }
+                                },
+                                icon: loginStore.senhaVisivel
+                                    ? const Icon(Icons.visibility_off)
+                                    : const Icon(Icons.visibility))),
+                        obscureText: !loginStore.senhaVisivel,
                       ),
                     ),
                     MaterialButton(
